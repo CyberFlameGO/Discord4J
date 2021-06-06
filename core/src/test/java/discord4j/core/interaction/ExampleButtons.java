@@ -1,6 +1,7 @@
-package discord4j.core;
+package discord4j.core.interaction;
 
 import discord4j.common.util.Snowflake;
+import discord4j.core.DiscordClient;
 import discord4j.core.event.domain.guild.GuildCreateEvent;
 import discord4j.core.event.domain.interaction.ButtonInteractEvent;
 import discord4j.core.object.component.ActionRow;

@@ -27,7 +27,8 @@ public interface MessageComponent {
     enum Type {
         UNKNOWN(-1),
         ACTION_ROW(1),
-        BUTTON(2);
+        BUTTON(2),
+        SELECT_MENU(3);
 
         private final int value;
 
@@ -43,6 +44,7 @@ public interface MessageComponent {
             switch (value) {
                 case 1: return ACTION_ROW;
                 case 2: return BUTTON;
+                case 3: return SELECT_MENU;
                 default: return UNKNOWN;
             }
         }

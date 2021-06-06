@@ -114,6 +114,10 @@ public class ApplicationCommandInteraction implements DiscordObject {
                 .findFirst();
     }
 
+    public Optional<List<String>> getValues() {
+        return data.values().toOptional();
+    }
+
     @Override
     public GatewayDiscordClient getClient() {
         return gateway;
