@@ -3,10 +3,8 @@ package discord4j.core.interaction;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClient;
 import discord4j.core.event.domain.guild.GuildCreateEvent;
-import discord4j.core.event.domain.interaction.ButtonInteractEvent;
 import discord4j.core.event.domain.interaction.SelectMenuInteractEvent;
 import discord4j.core.object.component.ActionRow;
-import discord4j.core.object.component.Buttons;
 import discord4j.core.object.component.SelectMenu;
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.TextChannel;
@@ -35,6 +33,7 @@ public class ExampleSelectMenu {
                                                         SelectMenu.Option.of("option 1", "foo"),
                                                         SelectMenu.Option.of("option 2", "bar"),
                                                         SelectMenu.Option.of("option 3", "baz"))
+                                                        .withMaxValues(2)
                                         )
                                 );
                             }));
@@ -46,7 +45,7 @@ public class ExampleSelectMenu {
                                             Mono.justOrEmpty(event.getInteraction().getMessage())
                                                     .map(Message::getId)
                                                     .filter(selectMenuMessageId::equals)
-                                                    .then(event.edit(spec -> spec.setContent(event.getValues().toString())))
+                                                    .then(event.reply(event.getValues().toString()))
                                     )
                             )
                             .then();

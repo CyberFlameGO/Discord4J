@@ -96,7 +96,7 @@ public class SelectMenu implements MessageComponent {
             return new Option(SelectOptionData.builder()
                     .label(label)
                     .value(value)
-                    ._default(isDefault)
+                    .isDefault(isDefault)
                     .build());
         }
 
@@ -124,7 +124,7 @@ public class SelectMenu implements MessageComponent {
         }
 
         public boolean isDefault() {
-            return data._default();
+            return data.isDefault().toOptional().orElse(false);
         }
 
         public Option withDescription(String description) {
