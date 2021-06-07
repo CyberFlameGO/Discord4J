@@ -23,7 +23,7 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec;
 import discord4j.discordjson.json.InteractionApplicationCommandCallbackData;
 import discord4j.gateway.ShardInfo;
-import discord4j.rest.interaction.FollowupHandler;
+import discord4j.rest.interaction.InteractionResponse;
 import discord4j.rest.util.InteractionResponseType;
 import reactor.core.publisher.Mono;
 
@@ -36,16 +36,15 @@ public class ComponentInteractEvent extends InteractionCreateEvent {
     }
 
     public String getCustomId() {
-        return getInteraction().getCommandInteraction() // yes, this is getCommandInteraction for buttons... thanks Discord
+        return getInteraction().getCommandInteraction()
                 .flatMap(ApplicationCommandInteraction::getCustomId)
                 // note: custom_id is not guaranteed to present on buttons in general because of link buttons,
-                // but it is guaranteed to be present here, because we received an interaction for it
+                // but it is guaranteed to be present here, because we received an interaction_create for it
                 // (which doesn't happen for link buttons)
                 .orElseThrow(IllegalStateException::new);
     }
 
-    // TODO: is this the right spec? needs rename
-    public Mono<FollowupHandler> edit(Consumer<? super InteractionApplicationCommandCallbackSpec> spec) {
+    public Mono<InteractionResponse> edit(Consumer<? super InteractionApplicationCommandCallbackSpec> spec) {
         return Mono.defer(
                 () -> {
                     InteractionApplicationCommandCallbackSpec mutatedSpec =
@@ -59,16 +58,16 @@ public class ComponentInteractEvent extends InteractionCreateEvent {
 
                     return respond(InteractionResponseType.UPDATE_MESSAGE, mutatedSpec.asRequest());
                 })
-                .thenReturn(followupHandler);
+                .thenReturn(response);
     }
 
     @Override
-    public Mono<FollowupHandler> deferResponse() {
+    public Mono<InteractionResponse> acknowledge() {
         return respond(InteractionResponseType.DEFERRED_UPDATE_MESSAGE, null);
     }
 
     @Override
-    public Mono<FollowupHandler> deferResponseEphemeral() {
+    public Mono<InteractionResponse> acknowledgeEphemeral() {
         InteractionApplicationCommandCallbackData data = InteractionApplicationCommandCallbackData.builder()
                 .flags(Message.Flag.EPHEMERAL.getFlag())
                 .build();

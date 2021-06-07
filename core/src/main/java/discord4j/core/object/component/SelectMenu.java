@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
-public class SelectMenu implements MessageComponent {
+public class SelectMenu extends ActionComponent {
 
     public static SelectMenu of(String customId, Option... options) {
         return of(customId, Arrays.asList(options));
@@ -25,35 +25,33 @@ public class SelectMenu implements MessageComponent {
                 .build());
     }
 
-    private final ComponentData data;
-
-    SelectMenu(ComponentData data) {
-        this.data = data;
+    public SelectMenu(ComponentData data) {
+        super(data);
     }
 
     public String getCustomId() {
-        return data.customId().toOptional().orElseThrow(IllegalStateException::new);
+        return getData().customId().toOptional().orElseThrow(IllegalStateException::new);
     }
 
     public Optional<String> getPlaceholder() {
-        return data.customId().toOptional();
+        return getData().customId().toOptional();
     }
 
     public OptionalInt getMinValues() {
-        return data.minValues().toOptional()
+        return getData().minValues().toOptional()
                 .map(OptionalInt::of)
                 .orElse(OptionalInt.empty());
     }
 
     public OptionalInt getMaxValues() {
-        return data.maxValues().toOptional()
+        return getData().maxValues().toOptional()
                 .map(OptionalInt::of)
                 .orElse(OptionalInt.empty());
     }
 
     public List<Option> getOptions() {
         // should always be present for select menus
-        List<SelectOptionData> options = data.options().toOptional().orElseThrow(IllegalAccessError::new);
+        List<SelectOptionData> options = getData().options().toOptional().orElseThrow(IllegalAccessError::new);
 
         return options.stream()
                 .map(Option::new)
@@ -61,25 +59,15 @@ public class SelectMenu implements MessageComponent {
     }
 
     public SelectMenu withPlaceholder(String placeholder) {
-        return new SelectMenu(ComponentData.builder().from(data).placeholder(placeholder).build());
+        return new SelectMenu(ComponentData.builder().from(getData()).placeholder(placeholder).build());
     }
 
     public SelectMenu withMinValues(int minValues) {
-        return new SelectMenu(ComponentData.builder().from(data).minValues(minValues).build());
+        return new SelectMenu(ComponentData.builder().from(getData()).minValues(minValues).build());
     }
 
     public SelectMenu withMaxValues(int maxValues) {
-        return new SelectMenu(ComponentData.builder().from(data).maxValues(maxValues).build());
-    }
-
-    @Override
-    public Type getType() {
-        return Type.SELECT_MENU;
-    }
-
-    @Override
-    public ComponentData getData() {
-        return data;
+        return new SelectMenu(ComponentData.builder().from(getData()).maxValues(maxValues).build());
     }
 
     public static class Option {

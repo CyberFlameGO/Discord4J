@@ -18,56 +18,126 @@ package discord4j.core.object.component;
 
 import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.discordjson.json.ComponentData;
+import discord4j.discordjson.json.ImmutableComponentData;
+import reactor.util.annotation.Nullable;
 
 import java.util.Optional;
 
-public class Button implements MessageComponent {
+public class Button extends ActionComponent {
 
-    private final ComponentData data;
+    public static Button primary(String customId, String label) {
+        return of(Button.Style.PRIMARY, customId, null, label, null);
+    }
 
-    Button(ComponentData data) {
-        this.data = data;
+    public static Button primary(String customId, ReactionEmoji emoji) {
+        return of(Button.Style.PRIMARY, customId, emoji, null, null);
+    }
+
+    public static Button primary(String customId, ReactionEmoji emoji, String label) {
+        return of(Button.Style.PRIMARY, customId, emoji, label, null);
+    }
+
+    public static Button secondary(String customId, String label) {
+        return of(Button.Style.SECONDARY, customId, null, label, null);
+    }
+
+    public static Button secondary(String customId, ReactionEmoji emoji) {
+        return of(Button.Style.SECONDARY, customId, emoji, null, null);
+    }
+
+    public static Button secondary(String customId, ReactionEmoji emoji, String label) {
+        return of(Button.Style.SECONDARY, customId, emoji, label, null);
+    }
+
+    public static Button success(String customId, String label) {
+        return of(Button.Style.SUCCESS, customId, null, label, null);
+    }
+
+    public static Button success(String customId, ReactionEmoji emoji) {
+        return of(Button.Style.SUCCESS, customId, emoji, null, null);
+    }
+
+    public static Button success(String customId, ReactionEmoji emoji, String label) {
+        return of(Button.Style.SUCCESS, customId, emoji, label, null);
+    }
+
+    public static Button danger(String customId, String label) {
+        return of(Button.Style.DANGER, customId, null, label, null);
+    }
+
+    public static Button danger(String customId, ReactionEmoji emoji) {
+        return of(Button.Style.DANGER, customId, emoji, null, null);
+    }
+
+    public static Button danger(String customId, ReactionEmoji emoji, String label) {
+        return of(Button.Style.DANGER, customId, emoji, label, null);
+    }
+
+    public static Button link(String url, String label) {
+        return of(Button.Style.LINK, null, null, label, url);
+    }
+
+    public static Button link(String url, ReactionEmoji emoji) {
+        return of(Button.Style.LINK, null, emoji, null, url);
+    }
+
+    public static Button link(String url, ReactionEmoji emoji, String label) {
+        return of(Button.Style.LINK, null, emoji, label, url);
+    }
+
+    public static Button of(Style style, @Nullable String customId, @Nullable ReactionEmoji emoji, @Nullable String label, @Nullable String url) {
+        ImmutableComponentData.Builder builder = ComponentData.builder()
+                .type(MessageComponent.Type.BUTTON.getValue())
+                .style(style.getValue());
+
+        if (customId != null)
+            builder.customId(customId);
+
+        if (emoji != null)
+            builder.emoji(emoji.getData());
+
+        if (label != null)
+            builder.label(label);
+
+        if (url != null)
+            builder.url(url);
+
+        return new Button(builder.build());
+    }
+
+    public Button(ComponentData data) {
+        super(data);
     }
 
     public Style getStyle() {
-        return data.style().toOptional()
+        return getData().style().toOptional()
                 .map(Style::of)
                 .orElseThrow(IllegalStateException::new); // style should always be present on buttons
     }
 
     public Optional<String> getLabel() {
-        return data.label().toOptional();
+        return getData().label().toOptional();
     }
 
     public Optional<ReactionEmoji> getEmoji() {
-        return data.emoji().toOptional()
+        return getData().emoji().toOptional()
                 .map(ReactionEmoji::of);
     }
 
     public Optional<String> getCustomId() {
-        return data.customId().toOptional();
+        return getData().customId().toOptional();
     }
 
     public Optional<String> getUrl() {
-        return data.url().toOptional();
+        return getData().url().toOptional();
     }
 
     public boolean isDisabled() {
-        return data.disabled().toOptional().orElse(false);
+        return getData().disabled().toOptional().orElse(false);
     }
 
     public Button disabled() {
-        return new Button(ComponentData.builder().from(data).disabled(true).build());
-    }
-
-    @Override
-    public Type getType() {
-        return Type.BUTTON;
-    }
-
-    @Override
-    public ComponentData getData() {
-        return data;
+        return new Button(ComponentData.builder().from(getData()).disabled(true).build());
     }
 
     enum Style {

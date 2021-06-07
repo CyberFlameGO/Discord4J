@@ -27,7 +27,7 @@ public class ExampleSelectMenu {
                             .ofType(TextChannel.class)
                             .flatMap(channel -> channel.createMessage(msg -> {
                                 msg.setContent("Select some options!");
-                                msg.setActionRows(
+                                msg.setComponents(
                                         ActionRow.of(
                                                 SelectMenu.of("mySelectMenu",
                                                         SelectMenu.Option.of("option 1", "foo"),
