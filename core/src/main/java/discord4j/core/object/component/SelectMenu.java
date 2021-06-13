@@ -51,7 +51,7 @@ public class SelectMenu extends ActionComponent {
 
     public List<Option> getOptions() {
         // should always be present for select menus
-        List<SelectOptionData> options = getData().options().toOptional().orElseThrow(IllegalAccessError::new);
+        List<SelectOptionData> options = getData().options().toOptional().orElseThrow(IllegalStateException::new);
 
         return options.stream()
                 .map(Option::new)
@@ -120,7 +120,7 @@ public class SelectMenu extends ActionComponent {
         }
 
         public Option withEmoji(ReactionEmoji emoji) {
-            return new Option(SelectOptionData.builder().from(data).emoji(emoji.getData()).build());
+            return new Option(SelectOptionData.builder().from(data).emoji(emoji.asEmojiData()).build());
         }
     }
 }
